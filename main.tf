@@ -18,3 +18,30 @@ resource "docker_network" "rede" {
 resource "docker_volume" "redis_dados" {
   name = "contador-redis-${var.ambiente}"
 }
+
+resource "docker_image" "redis" {
+  name         = "redis:7.2-alpine"
+  keep_locally = true
+}
+
+resource "docker_container" "redis" {
+  name    = "contador-redis-${var.ambiente}"
+  image   = docker_image.redis.image_id
+  restart = "unless-stopped"
+
+  command = [
+    "redis-server",
+    "--requirepass", var.redis_senha,
+    "--appendonly", "yes"
+  ]
+
+  networks_advanced {
+    name    = docker_network.rede.name
+    aliases = ["redis"]
+  }
+
+  volumes {
+    volume_name    = docker_volume.redis_dados.name
+    container_path = "/data"
+  }
+}
