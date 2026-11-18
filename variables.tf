@@ -30,3 +30,14 @@ variable "replicas" {
     error_message = "O número de réplicas deve estar entre 1 e 5."
   }
 }
+
+variable "porta" {
+  description = "Porta externa da aplicação"
+  type        = number
+  default     = 8080
+
+  validation {
+    condition     = var.porta >= 1024 && var.porta <= 65535
+    error_message = "A porta deve estar entre 1024 e 65535."
+  }
+}

@@ -1,0 +1,22 @@
+resolver 127.0.0.11 valid=5s ipv6=off;
+
+upstream app {
+    zone app 64k;
+%{ for nome in replicas ~}
+    server ${nome}:5000;
+%{ endfor ~}
+}
+
+server {
+    listen 80;
+
+    location = /favicon.ico {
+        return 204;
+        access_log off;
+    }
+
+    location / {
+        proxy_pass http://app;
+        proxy_set_header Host $host;
+    }
+}
