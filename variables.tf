@@ -19,3 +19,14 @@ variable "redis_senha" {
     error_message = "A senha do Redis deve ter pelo menos 8 caracteres."
   }
 }
+
+variable "replicas" {
+  description = "Quantidade de réplicas da aplicação"
+  type        = number
+  default     = 2
+
+  validation {
+    condition     = var.replicas >= 1 && var.replicas <= 5
+    error_message = "O número de réplicas deve estar entre 1 e 5."
+  }
+}

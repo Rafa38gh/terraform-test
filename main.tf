@@ -45,3 +45,16 @@ resource "docker_container" "redis" {
     container_path = "/data"
   }
 }
+
+# Cria as réplicas da aplicação
+module "webapp" {
+  source = "./modules/webapp"
+
+  ambiente    = var.ambiente
+  replicas    = var.replicas
+  rede_nome   = docker_network.rede.name
+  redis_senha = var.redis_senha
+  caminho_app = "${path.root}/app"
+
+  depends_on = [docker_container.redis]
+}
